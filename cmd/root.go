@@ -10,6 +10,7 @@ var rootCmd = &cobra.Command{
 	Long:  "",
 }
 
+// Execute runs the root cmd back ground.
 func Execute() error {
 	return rootCmd.Execute()
 }
