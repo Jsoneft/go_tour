@@ -14,7 +14,9 @@ const strutTpl = `type {{.TableName | ToCamelCase}} struct {
 
 func (model {{.TableName | ToCamelCase}}) TableName() string {
 	return "{{.TableName}}"
-}`
+}
+
+`
 
 type StructTemplate struct {
 	strutTpl string

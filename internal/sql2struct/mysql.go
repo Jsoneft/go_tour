@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type DBModel struct {
@@ -29,31 +30,32 @@ type TableColumn struct {
 }
 
 var DBTypeToStructType = map[string]string{
-	"int":        "int32",
-	"tinyint":    "int8",
-	"smallint":   "int",
-	"mediumint":  "int64",
-	"bigint":     "int64",
-	"bit":        "int",
-	"bool":       "bool",
-	"enum":       "string",
-	"set":        "string",
-	"varchar":    "string",
-	"char":       "string",
-	"tinytext":   "string",
-	"mediumtext": "string",
-	"text":       "string",
-	"longtext":   "string",
-	"blob":       "string",
-	"tinyblob":   "string",
-	"mediumblob": "string",
-	"longblob":   "string",
-	"date":       "time.Time",
-	"datetime":   "time.Time",
-	"timestamp":  "time.Time",
-	"time":       "time.Time",
-	"float":      "float64",
-	"double":     "float64",
+	"int":         "int32",
+	"tinyint":     "int8",
+	"smallint":    "int",
+	"mediumint":   "int64",
+	"bigint":      "int64",
+	"bit":         "int",
+	"bool":        "bool",
+	"enum":        "string",
+	"set":         "string",
+	"varchar":     "string",
+	"varchar(30)": "string",
+	"char":        "string",
+	"tinytext":    "string",
+	"mediumtext":  "string",
+	"text":        "string",
+	"longtext":    "string",
+	"blob":        "string",
+	"tinyblob":    "string",
+	"mediumblob":  "string",
+	"longblob":    "string",
+	"date":        "time.Time",
+	"datetime":    "time.Time",
+	"timestamp":   "time.Time",
+	"time":        "time.Time",
+	"float":       "float64",
+	"double":      "float64",
 }
 
 func NewModel(info *DBInfo) *DBModel {
@@ -77,7 +79,7 @@ func (m *DBModel) Connect() error {
 }
 
 func (m *DBModel) GetColumns(dbName, tableName string) ([]*TableColumn, error) {
-	query := "SELECT" + "COLUMN_NAME, DATA_TYPE, COLUMN_KEY, IS_NULLABLE, COLUMN_TYPE, COLUMN_COMMENT " +
+	query := "SELECT " + "COLUMN_NAME, DATA_TYPE, COLUMN_KEY, IS_NULLABLE, COLUMN_TYPE, COLUMN_COMMENT " +
 		"FROM COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? "
 	rows, err := m.DBEngine.Query(query, dbName, tableName)
 	if err != nil {

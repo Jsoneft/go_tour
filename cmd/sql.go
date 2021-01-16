@@ -82,22 +82,21 @@ var sql2structCmd = &cobra.Command{
 			PassWord: password,
 			CharSet:  charset,
 		}
-		dbModel := sql2struct.DBModel{
-			DBEngine: nil,
-			DBInfo:   dbInfo,
-		}
+		dbModel := sql2struct.NewModel(dbInfo)
 		err := dbModel.Connect()
 		if err != nil {
 			log.Fatalf("dbModel.Connect() err = %v", err)
 		}
 
 		columns, err := dbModel.GetColumns(dbName, tableName)
-
+		if err != nil {
+			log.Fatalf("dbModel.GetColumns() err = %v", err)
+		}
 		Tpl := sql2struct.NewStructTemplate()
 		structCol := Tpl.AssemblyColumns(columns)
 		err = Tpl.Generate(tableName, structCol)
 		if err != nil {
-			log.Fatalf("Tpl.Generate(tableName, structCol) err = %v", err)
+			log.Fatalf("Tpl.Generate() err = %v", err)
 		}
 
 	},
@@ -121,10 +120,9 @@ func init() {
 	sqlCmd.AddCommand(sql2structCmd)
 	sql2structCmd.Flags().StringVarP(&username, "username", "", "", "数据库账号")
 	sql2structCmd.Flags().StringVarP(&password, "password", "", "", "数据库密码")
-	sql2structCmd.Flags().StringVarP(&host, "host", "", "", "数据库HOST")
-	sql2structCmd.Flags().StringVarP(&charset, "charset", "", "", "数据库 字符串编码")
+	sql2structCmd.Flags().StringVarP(&host, "host", "", "127.0.0.1:3306", "数据库HOST")
+	sql2structCmd.Flags().StringVarP(&charset, "charset", "", "utf8mb4", "数据库 字符串编码")
 	sql2structCmd.Flags().StringVarP(&dbName, "db", "", "", "数据库 名称")
-	sql2structCmd.Flags().StringVarP(&dbType, "type", "", "", "数据库 实例类型")
+	sql2structCmd.Flags().StringVarP(&dbType, "type", "", "mysql", "数据库 实例类型")
 	sql2structCmd.Flags().StringVarP(&tableName, "table", "", "", "数据库 表名称")
-
 }
